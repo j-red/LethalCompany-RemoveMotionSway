@@ -26,9 +26,6 @@ namespace j_red.Patches
         }
         */
 
-
-        // public static GameObject cameraContainer;
-        // public static Transform HUDHelmetPosition;
         public static List<Transform> HUDHelmetPositions = new List<Transform>();
         public const int MAX_NUM_PLAYERS = 4;
 
@@ -36,11 +33,11 @@ namespace j_red.Patches
         [HarmonyPostfix]
         static void CacheCameraContainer(ref PlayerControllerB __instance)
         {
-            
+
             // Debug.Log("I am player: " + __instance.ToString());
 
             // cameraContainer = GameObject.Find("/Environment/HangarShip/Player/ScavengerModel/metarig/CameraContainer");
-            
+
             /*
             cameraContainer = GameObject.Find("CameraContainer");
             
@@ -54,39 +51,15 @@ namespace j_red.Patches
 
             // HUDHelmetPosition = cameraContainer.transform.Find("MainCamera/HUDHelmetPosition");
 
-            for (int i = 0; i < MAX_NUM_PLAYERS; i ++)
-            {
-                /*
-                GameObject _player;
-                if (i == 0)
-                {
-                    _player = GameObject.Find("Player");
-                } else
-                {
-                    _player = GameObject.Find("Player (" + i.ToString() + ")");
-                }
-                */
+            // Get the Transform associated with the GameObject the PlayerControllerB script is attached to/a component of.
+            Transform _player = __instance.transform;
 
-                Transform _player = __instance.transform;
-                Debug.Log("GAME OBJECT OF INSTANCE TRANSFORM: " + __instance.transform);
-                // Debug.Log("GAME OBJECT PARENT OF INSTANCE TRANSFORM: " + __instance.transform.parent);
+            // Add the player instance's HUDHelmetPosition element to list of items to update position on.
+            Transform _helmetPos = _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera/HUDHelmetPosition");
 
-                // If beyond index of number of players, break.
-                Debug.Log("Player " + i.ToString() + ": " + _player.ToString());
-                // if (!_player) break;
+            // Debug.Log("ScavengerModel/metarig/CameraContainer/MainCamera/HUDHelmetPosition: " + _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera/HUDHelmetPosition"));
 
-                // Debug.Log("Scavenger: " + _player.Find("ScavengerModel"));
-                Debug.Log("ScavengerModel/metarig/CameraContainer/MainCamera: " + _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera"));
-                Debug.Log("ScavengerModel/metarig/CameraContainer/MainCamera/HUDHelmetPosition: " + _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera/HUDHelmetPosition"));
-
-                // Otherwise, add HUDHelmetPosition element to list of items to update position on.
-                Transform _helmetPos = _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera/HUDHelmetPosition");
-                
-                if (_helmetPos)
-                    HUDHelmetPositions.Add(_helmetPos); 
-            }
-
-            Debug.Log("Player HUDs: " + HUDHelmetPositions.ToString());
+            if (_helmetPos) HUDHelmetPositions.Add(_helmetPos);
         }
         
 
@@ -94,25 +67,6 @@ namespace j_red.Patches
         [HarmonyPostfix]
         static void LateUpdatePatch(ref float ___drunkness, ref PlayerControllerB __instance)
         {
-            // ___drunkness = 0f;
-
-            // __instance.playerEye.position = __instance.playerEye.position + new Vector3(1f, -1f, 1f);
-            // __instance.gameplayCamera.transform.position = __instance.gameplayCamera.transform.position + new Vector3(1f, 0, 0);
-
-            // /HangarShip/Player/ScavengerModel/metarig/CameraContainer/MainCamera/
-
-            // Environment/HangarShip/Player/ScavengerModel/metarig/CameraContainer object (last in list of MainCamera objects) controls actual player visor movement
-            // Environment/HangarShip/Player/ScavengerModel/metarig/ does NOT move when walking
-
-            // Idea: Set CameraContainer position equal to player position plus offset?
-            // CameraContainer Y Standing in ship: 2.6372
-            // CameraContainer Y Crouched in ship: 1.4179
-            // Player Parent Y Standing in Ship: 0.2862
-            // Player Parent Y crouched in ship: 0.368
-            // Update cached offset whenever crouch state changes?
-
-            // __instance.cameraContainerTransform.position = __instance.playerModelArmsMetarig.transform.position;// + new Vector3(0, 0f, 0);
-
             if (!__instance.inTerminalMenu)
             {
                 __instance.cameraContainerTransform.position = new Vector3(

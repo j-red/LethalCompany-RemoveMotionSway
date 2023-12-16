@@ -13,8 +13,8 @@ namespace j_red
     [BepInPlugin(GUID, ModName, ModVersion)]
     public class ModBase : BaseUnityPlugin
     {
-        private const string GUID = "jred.LethalHeadBob";
-        private const string ModName = "Remove Head Bobbing";
+        private const string GUID = "jred.RemoveMotionSway";
+        private const string ModName = "Remove Motion Sway";
         private const string ModVersion = "1.0.0";
 
         private readonly Harmony harmony = new Harmony(GUID);
@@ -32,8 +32,7 @@ namespace j_red
             }
 
             logger = BepInEx.Logging.Logger.CreateLogSource(GUID);
-
-            logger.LogInfo("Test mod awoken");
+            logger.LogInfo("Remove Motion Sway initialized.");
 
             // harmony.PatchAll();
             
