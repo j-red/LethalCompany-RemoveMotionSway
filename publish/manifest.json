@@ -3,5 +3,7 @@
     "version_number": "1.0.0",
     "website_url": "https://github.com/j-red/LethalCompany-RemoveMotionSway",
     "description": "Remove the head bob animation and helmet visor HUD overlay while walking and sprinting.",
-    "dependencies": []
+    "dependencies": [
+        "BepInEx-BepInExPack-5.4.2100"
+    ]
 }
