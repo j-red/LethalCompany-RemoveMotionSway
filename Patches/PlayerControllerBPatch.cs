@@ -10,9 +10,8 @@ namespace j_red.Patches
     internal class PlayerControllerBPatch
     {
         public static List<Transform> HUDHelmetPositions = new List<Transform>();
-        public const int MAX_NUM_PLAYERS = 4;
-
-        [HarmonyPatch("Awake")] // for private methods
+        
+        [HarmonyPatch("Awake")] // Patch method by name
         [HarmonyPostfix]
         static void CacheCameraContainer(ref PlayerControllerB __instance)
         {
@@ -26,7 +25,7 @@ namespace j_red.Patches
         }
         
 
-        [HarmonyPatch("LateUpdate")] // for private methods
+        [HarmonyPatch("LateUpdate")]
         [HarmonyPostfix]
         static void LateUpdatePatch(ref float ___drunkness, ref PlayerControllerB __instance)
         {
@@ -34,7 +33,7 @@ namespace j_red.Patches
             {
                 __instance.cameraContainerTransform.position = new Vector3(
                     __instance.cameraContainerTransform.position.x,
-                    __instance.playerModelArmsMetarig.transform.position.y, // copy fixed height from metarig
+                    __instance.playerModelArmsMetarig.transform.position.y, // copy height from metarig
                     __instance.cameraContainerTransform.position.z
                 );
 
