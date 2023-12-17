@@ -27,7 +27,6 @@ namespace j_red
         {
             if (Instance == null)
             {
-                // Instance = new ModBase();
                 Instance = this;
             }
 
@@ -35,11 +34,8 @@ namespace j_red
             logger.LogInfo("Remove Motion Sway initialized.");
 
             // harmony.PatchAll();
-            
             harmony.PatchAll(typeof (ModBase));
             harmony.PatchAll(typeof(PlayerControllerBPatch));
-            // harmony.PatchAll(typeof(PlayerAnimationEventsPatch));
-            // harmony.PatchAll(typeof(HUDManager));
         }
     }
 }

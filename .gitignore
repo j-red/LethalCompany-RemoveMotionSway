@@ -177,7 +177,8 @@ DocProject/Help/Html2
 DocProject/Help/html
 
 # Click-Once directory
-publish/
+publish/*.zip
+publish/*.dll
 
 # Publish Web Output
 *.[Pp]ublish.xml

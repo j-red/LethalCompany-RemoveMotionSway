@@ -69,7 +69,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /y $(TargetPath) "F:\Steam\steamapps\common\Lethal Company\BepInEx\plugins"</PostBuildEvent>
+    <PostBuildEvent>xcopy /y $(TargetPath) ..\..\publish
+xcopy /y $(TargetPath) "F:\Steam\steamapps\common\Lethal Company\BepInEx\plugins"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
