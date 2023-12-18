@@ -15,7 +15,7 @@ namespace j_red
     {
         private const string GUID = "jred.RemoveMotionSway";
         private const string ModName = "Remove Motion Sway";
-        private const string ModVersion = "1.0.0";
+        private const string ModVersion = "1.1.0";
 
         private readonly Harmony harmony = new Harmony(GUID);
 
