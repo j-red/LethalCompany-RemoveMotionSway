@@ -7,9 +7,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BepInEx.Configuration;
+using UnityEngine;
 
 namespace j_red
 {
+    public class ModConfig
+    {
+        public ConfigEntry<bool> lockFOV;
+        [Range(0f, 132f)]
+        public ConfigEntry<float> FOV;
+        public ConfigEntry<float> terminalFOV;
+    }
+
     [BepInPlugin(GUID, ModName, ModVersion)]
     public class ModBase : BaseUnityPlugin
     {
@@ -20,6 +30,7 @@ namespace j_red
         private readonly Harmony harmony = new Harmony(GUID);
 
         private static ModBase Instance;
+        public static ModConfig config;
 
         internal ManualLogSource logger;
 
@@ -28,6 +39,12 @@ namespace j_red
             if (Instance == null)
             {
                 Instance = this;
+                config = new ModConfig();
+
+                config.lockFOV = Config.Bind("General", "Lock FOV", true, "Determines if the player field of view should remain locked. Disable for mod compatibility.");
+                // config.SomeValue = Config.Bind("General", "SomeValue", 42, "An example integer value");
+                config.FOV = Config.Bind("General", "Field of View", 66f, "FOV to use when locked. Has no effect if LockFOV is false. Lethal Company default is 66 degrees.");
+                config.FOV = Config.Bind("General", "Terminal Field of View", 66f, "FOV to use in terminal window. Default is 66 degrees.");
             }
 
             logger = BepInEx.Logging.Logger.CreateLogSource(GUID);

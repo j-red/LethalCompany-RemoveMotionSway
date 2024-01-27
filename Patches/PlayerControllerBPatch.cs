@@ -10,13 +10,16 @@ namespace j_red.Patches
     internal class PlayerControllerBPatch
     {
         public static List<Transform> HUDHelmetPositions = new List<Transform>();
-        public static float fov = -1f;
+        // public static float fov = 66f; // default is 66f, stored in configuration manager instead
         public static Camera playerCam = null;
 
         [HarmonyPatch("Awake")] // Patch method by name
         [HarmonyPostfix]
         static void CacheCameraContainer(ref PlayerControllerB __instance)
         {
+            // Remove previously cached entries
+            // HUDHelmetPositions.Clear(); // this fixes the multiple login issue
+
             // Get the Transform associated with the GameObject the PlayerControllerB script is attached to/a component of.
             Transform _player = __instance.transform;
 
@@ -27,7 +30,9 @@ namespace j_red.Patches
 
             // Cache reference to player camera and initial FOV
             playerCam = _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera").GetComponent<Camera>();
-            fov = playerCam.fieldOfView;
+            // fov = playerCam.fieldOfView;
+
+            // Debug.Log("Called AWAKE and updated cache");
         }
 
 
@@ -36,6 +41,9 @@ namespace j_red.Patches
         [HarmonyPostfix]
         static void LateUpdatePatch(ref PlayerControllerB __instance)
         {
+            HUDHelmetPositions.Clear(); // this fixes the multiple login issue
+            CacheCameraContainer(ref __instance);
+
             if (!__instance.inTerminalMenu)
             {
                 __instance.cameraContainerTransform.position = new Vector3(
@@ -47,15 +55,47 @@ namespace j_red.Patches
                 // Apply fixed rotation offset to camera container relative to parent metarig rotation.
                 __instance.cameraContainerTransform.localRotation = Quaternion.Euler(cameraRotation);
 
+                // Lock camera FOV to initial value
+                if (ModBase.config.lockFOV.Value)
+                {
+                    // Debug.Log("FOV is locked");
+                    if (playerCam)
+                    {
+                        // playerCam.fieldOfView = fov;
+                        playerCam.fieldOfView = ModBase.config.FOV.Value;
+                        // Debug.Log("Set Camera FOV to " + playerCam.fieldOfView.ToString());
+                    }
+
+                } else
+                {
+                    // Debug.Log("FOV is UNLOCKED -- default FOV: " + fov.ToString());
+                    // Debug.Log("FOV is UNLOCKED -- current FOV: " + playerCam.fieldOfView.ToString())
+                }
+
                 // Remove helmet HUD effect
                 foreach (Transform t in HUDHelmetPositions)
                 {
-                    t.position = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity); // Banish the game object
+                    // t.position = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity); // Banish the game object. Maybe place it behind the player instead?
+                    try
+                    {
+                        t.position = __instance.transform.position - (__instance.transform.forward * 10f); // place behind player?
+                        // Debug.Log(t.position);
+                    }
+                    catch
+                    {
+                        Debug.LogWarning("Failed to update position for helmet");
+                    }
                 }
 
-                // Lock camera FOV to initial value
-                if (playerCam) playerCam.fieldOfView = fov;
+            } else
+            {
+                // If player is in terminal window, sync terminal FOV
+                if (ModBase.config.lockFOV.Value && playerCam)
+                    playerCam.fieldOfView = ModBase.config.terminalFOV.Value;
             }
-        }
+
+            // Run following code at the end of every frame
+
+        } // end LateUpdate loop
     }
 }
