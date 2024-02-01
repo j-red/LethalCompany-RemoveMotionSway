@@ -1,6 +1,6 @@
 # Remove Motion Sway 
 
-A client-side mod to remove the camera head bobbing/motion sway while walking or running in Lethal Company. Also removes the helmet visor from the HUD overlay to further clean up the visual experience. Has additional support to toggle the FOV lock or set a specific FOV for use in the game.
+A client-side mod to remove the camera head bobbing/motion sway while walking or running in Lethal Company. Also removes the helmet visor from the HUD overlay to further clean up the visual experience. Has additional support to toggle the FOV lock or set a specific FOV for use in the game, as well as control the intensity of motion sway via configuration instead of disabling it entirely.
 
 ## Compatibility
 

@@ -18,6 +18,11 @@ namespace j_red
         [Range(0f, 132f)]
         public ConfigEntry<float> FOV;
         public ConfigEntry<float> terminalFOV;
+
+        public ConfigEntry<bool> disableMotionSway;
+        [Range(0f, 10f)]
+        public ConfigEntry<float> motionSwayIntensity;
+
     }
 
     [BepInPlugin(GUID, ModName, ModVersion)]
@@ -25,7 +30,7 @@ namespace j_red
     {
         private const string GUID = "jred.RemoveMotionSway";
         private const string ModName = "Remove Motion Sway";
-        private const string ModVersion = "1.2.0";
+        private const string ModVersion = "1.2.1";
 
         private readonly Harmony harmony = new Harmony(GUID);
 
@@ -41,8 +46,12 @@ namespace j_red
                 Instance = this;
                 config = new ModConfig();
 
+                // Motion Sway intensity controls
+                config.disableMotionSway = Config.Bind("General", "Disable Motion Sway", true, "If motion sway/head bobbing should be disabled. Default is true.");
+                config.motionSwayIntensity = Config.Bind("General", "Motion Sway Intensity", 1f, "If enabled, how strong the motion sway effect will be. Default 1.0, range [0.0, 10.0]. Recommended max 3.0.");
+
+                // FOV Controls
                 config.lockFOV = Config.Bind("General", "Lock FOV", true, "Determines if the player field of view should remain locked. Disable for mod compatibility.");
-                // config.SomeValue = Config.Bind("General", "SomeValue", 42, "An example integer value");
                 config.FOV = Config.Bind("General", "Field of View", 66f, "FOV to use when locked. Has no effect if LockFOV is false. Lethal Company default is 66 degrees.");
                 config.FOV = Config.Bind("General", "Terminal Field of View", 66f, "FOV to use in terminal window. Default is 66 degrees.");
             }
