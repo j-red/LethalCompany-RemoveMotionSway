@@ -93,7 +93,7 @@ namespace j_red.Patches
                     // t.position = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity); // Banish the game object. Maybe place it behind the player instead?
                     try
                     {
-                        t.position = __instance.transform.position - (__instance.transform.forward * 10f); // place behind player?
+                        t.position = __instance.transform.position - (__instance.transform.forward * 100f); // place behind player some far-away value
                         // Debug.Log(t.position);
                     }
                     catch
