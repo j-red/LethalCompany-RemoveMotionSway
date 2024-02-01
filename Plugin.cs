@@ -57,7 +57,7 @@ namespace j_red
             }
 
             logger = BepInEx.Logging.Logger.CreateLogSource(GUID);
-            logger.LogInfo("Remove Motion Sway initialized.");
+            logger.LogInfo("Remove Motion Sway v" + ModVersion + " initialized.");
 
             // harmony.PatchAll();
             harmony.PatchAll(typeof (ModBase));

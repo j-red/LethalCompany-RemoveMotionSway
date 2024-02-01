@@ -60,16 +60,6 @@ namespace j_red.Patches
                     // Motion sway is still enabled -- scale it by the config multiplier
                     float deltaHeight = __instance.cameraContainerTransform.position.y - __instance.playerModelArmsMetarig.transform.position.y;
 
-                    // Original: (A)  __instance.cameraContainerTransform.position.y
-                    // New: (B)       __instance.playerModelArmsMetarig.transform.position.y
-                    // Offset: (B - A)
-                    // Influence: I in range [0, 10.0]
-                    // Target: A = B + (I * (B - A)) = BI * BI - AI, or A = B + (I * (A - B)) = B + AI - BI => if I = 0, then pos = B
-
-                    // If Intensity = 0, Output = B
-                    // Intensity = 1, output = A
-                    // Intensity > 1, output = (A - B) * Intensity + B
-
                     __instance.cameraContainerTransform.position = new Vector3(
                         __instance.cameraContainerTransform.position.x,
                         __instance.playerModelArmsMetarig.transform.position.y + (deltaHeight * ModBase.config.motionSwayIntensity.Value),
@@ -78,12 +68,6 @@ namespace j_red.Patches
 
                     // Debug.Log("Intensity: " + ModBase.config.motionSwayIntensity.Value.ToString() + "\tOffset: " + (deltaHeight * ModBase.config.motionSwayIntensity.Value).ToString());
                 }
-
-                /* __instance.cameraContainerTransform.position = new Vector3(
-                    __instance.cameraContainerTransform.position.x,
-                    __instance.playerModelArmsMetarig.transform.position.y, // copy height from metarig
-                    __instance.cameraContainerTransform.position.z
-                ); */
 
                 // Apply fixed rotation offset to camera container relative to parent metarig rotation.
                 __instance.cameraContainerTransform.localRotation = Quaternion.Euler(cameraRotation);
