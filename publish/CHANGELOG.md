@@ -1,4 +1,4 @@
-### v1.2.1
+### v1.2.2
 
 Added configuration settings to change the intensity of motion sway/head bobbing animations, including to values greater than 1.0. Configuration settings to change motion intensity or disable it entirely should appear after running the game with the mod installed.
 
