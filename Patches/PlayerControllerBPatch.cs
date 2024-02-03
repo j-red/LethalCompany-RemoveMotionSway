@@ -104,9 +104,16 @@ namespace j_red.Patches
 
             } else
             {
+                // Debug.Log("Instance is in terminal menu");
                 // If player is in terminal window, sync terminal FOV
-                if (ModBase.config.lockFOV.Value && playerCam)
-                    playerCam.fieldOfView = ModBase.config.terminalFOV.Value;
+                try
+                {
+                    if (ModBase.config.lockFOV.Value && playerCam)
+                    {
+                        playerCam.fieldOfView = ModBase.config.terminalFOV.Value;
+                        // Debug.Log("Set Terminal FOV to " + playerCam.fieldOfView.ToString());
+                    }
+                } catch { }
             }
 
             // Run following code at the end of every frame
