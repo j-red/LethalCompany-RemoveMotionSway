@@ -1,7 +1,5 @@
-﻿using BepInEx;
-using GameNetcodeStuff;
+﻿using GameNetcodeStuff;
 using HarmonyLib;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace j_red.Patches
@@ -9,7 +7,6 @@ namespace j_red.Patches
     [HarmonyPatch(typeof(PlayerControllerB))]
     internal class PlayerControllerBPatch
     {
-        public static List<Transform> HUDHelmetPositions = new List<Transform>();
         // public static float fov = 66f; // default is 66f, stored in configuration manager instead
         public static Camera playerCam = null;
 
@@ -17,20 +14,19 @@ namespace j_red.Patches
         [HarmonyPostfix]
         static void CacheCameraContainer(ref PlayerControllerB __instance)
         {
-            // Remove previously cached entries
-            // HUDHelmetPositions.Clear(); // this fixes the multiple login issue
-
             // Get the Transform associated with the GameObject the PlayerControllerB script is attached to/a component of.
             Transform _player = __instance.transform;
-
-            // Add the player instance's HUDHelmetPosition element to list of items to update position on. 
-            Transform _helmetPos = _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera/HUDHelmetPosition");
-
-            if (_helmetPos) HUDHelmetPositions.Add(_helmetPos);
 
             // Cache reference to player camera and initial FOV
             playerCam = _player.Find("ScavengerModel/metarig/CameraContainer/MainCamera").GetComponent<Camera>();
             // fov = playerCam.fieldOfView;
+
+            if (ModBase.config.disableHUDHelmetVisor.Value)
+            {
+                GameObject helmet = GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/ScavengerHelmet");
+                MeshRenderer helmetRenderer = helmet.GetComponent<MeshRenderer>();
+                helmetRenderer.enabled = false;
+            }
 
             // Debug.Log("Called AWAKE and updated cache");
         }
@@ -38,39 +34,44 @@ namespace j_red.Patches
 
         private static Vector3 cameraRotation = new Vector3(90f, 0f, 0f);
         [HarmonyPatch("LateUpdate")]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         static void LateUpdatePatch(ref PlayerControllerB __instance)
         {
-            HUDHelmetPositions.Clear(); // this fixes the multiple login issue
-            CacheCameraContainer(ref __instance);
+            // Camera position must be updated in prefix patch instead of postfix in order for HUD helmet
+            // visor position to be in sync, this is especially useful if helmet visor is re-enabled.
 
             if (!__instance.inTerminalMenu)
             {
-
-                if (ModBase.config.disableMotionSway.Value)
+                // Don't touch camera when in special animation, such as when being spawned/revived, using terminal,
+                // using ship lever, charging item, climbing ladder, fall damage, being attacked, etc...
+                if (!__instance.inSpecialInteractAnimation && !__instance.playingQuickSpecialAnimation)
                 {
-                    // Motion sway is disabled
-                    __instance.cameraContainerTransform.position = new Vector3(
-                        __instance.cameraContainerTransform.position.x,
-                        __instance.playerModelArmsMetarig.transform.position.y, // copy height from metarig
-                        __instance.cameraContainerTransform.position.z
-                    );
-                } else
-                {
-                    // Motion sway is still enabled -- scale it by the config multiplier
-                    float deltaHeight = __instance.cameraContainerTransform.position.y - __instance.playerModelArmsMetarig.transform.position.y;
+                    if (ModBase.config.disableMotionSway.Value)
+                    {
+                        // Motion sway is disabled
+                        __instance.cameraContainerTransform.position = new Vector3(
+                            __instance.cameraContainerTransform.position.x,
+                            __instance.playerModelArmsMetarig.transform.position.y, // copy height from metarig
+                            __instance.cameraContainerTransform.position.z
+                        );
 
-                    __instance.cameraContainerTransform.position = new Vector3(
-                        __instance.cameraContainerTransform.position.x,
-                        __instance.playerModelArmsMetarig.transform.position.y + (deltaHeight * ModBase.config.motionSwayIntensity.Value),
-                        __instance.cameraContainerTransform.position.z
-                    );
+                        // Apply fixed rotation offset to camera container relative to parent metarig rotation.
+                        __instance.cameraContainerTransform.localRotation = Quaternion.Euler(cameraRotation);
+                    }
+                    else
+                    {
+                        // Motion sway is still enabled -- scale it by the config multiplier
+                        float deltaHeight = __instance.cameraContainerTransform.position.y - __instance.playerModelArmsMetarig.transform.position.y;
 
-                    // Debug.Log("Intensity: " + ModBase.config.motionSwayIntensity.Value.ToString() + "\tOffset: " + (deltaHeight * ModBase.config.motionSwayIntensity.Value).ToString());
+                        __instance.cameraContainerTransform.position = new Vector3(
+                            __instance.cameraContainerTransform.position.x,
+                            __instance.playerModelArmsMetarig.transform.position.y + (deltaHeight * ModBase.config.motionSwayIntensity.Value),
+                            __instance.cameraContainerTransform.position.z
+                        );
+
+                        // Debug.Log("Intensity: " + ModBase.config.motionSwayIntensity.Value.ToString() + "\tOffset: " + (deltaHeight * ModBase.config.motionSwayIntensity.Value).ToString());
+                    }
                 }
-
-                // Apply fixed rotation offset to camera container relative to parent metarig rotation.
-                __instance.cameraContainerTransform.localRotation = Quaternion.Euler(cameraRotation);
 
                 // Lock camera FOV to initial value
                 if (ModBase.config.lockFOV.Value)
@@ -86,22 +87,6 @@ namespace j_red.Patches
                 } else {
                     // ...
                 }
-
-                // Remove helmet HUD effect
-                foreach (Transform t in HUDHelmetPositions)
-                {
-                    // t.position = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity); // Banish the game object. Maybe place it behind the player instead?
-                    try
-                    {
-                        t.position = __instance.transform.position - (__instance.transform.forward * 100f); // place behind player some far-away value
-                        // Debug.Log(t.position);
-                    }
-                    catch
-                    {
-                        Debug.LogWarning("Failed to update position for helmet");
-                    }
-                }
-
             } else
             {
                 // Debug.Log("Instance is in terminal menu");
