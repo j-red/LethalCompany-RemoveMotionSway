@@ -27,8 +27,6 @@ namespace j_red.Patches
                 MeshRenderer helmetRenderer = helmet.GetComponent<MeshRenderer>();
                 helmetRenderer.enabled = false;
             }
-
-            // Debug.Log("Called AWAKE and updated cache");
         }
 
 

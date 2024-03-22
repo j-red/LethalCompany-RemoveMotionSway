@@ -24,7 +24,6 @@ namespace j_red
         public ConfigEntry<float> motionSwayIntensity;
 
         public ConfigEntry<bool> disableHUDHelmetVisor;
-
     }
 
     [BepInPlugin(GUID, ModName, ModVersion)]
@@ -32,7 +31,7 @@ namespace j_red
     {
         private const string GUID = "jred.RemoveMotionSway";
         private const string ModName = "Remove Motion Sway";
-        private const string ModVersion = "1.2.3";
+        private const string ModVersion = "1.3.0";
 
         private readonly Harmony harmony = new Harmony(GUID);
 
