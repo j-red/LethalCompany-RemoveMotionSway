@@ -23,6 +23,8 @@ namespace j_red
         [Range(0f, 10f)]
         public ConfigEntry<float> motionSwayIntensity;
 
+        public ConfigEntry<bool> disableHUDHelmetVisor;
+
     }
 
     [BepInPlugin(GUID, ModName, ModVersion)]
@@ -54,6 +56,9 @@ namespace j_red
                 config.lockFOV = Config.Bind("General", "Lock FOV", true, "Determines if the player field of view should remain locked. Disable for mod compatibility.");
                 config.FOV = Config.Bind("General", "Field of View", 66f, "FOV to use when locked. Has no effect if LockFOV is false.");
                 config.terminalFOV = Config.Bind("General", "Terminal Field of View", 66f, "FOV to use in terminal window.");
+
+                // HUD Helmet Visor
+                config.disableHUDHelmetVisor = Config.Bind("General", "Disable HUD helmet visor effect", true, "If enabled, will remove the helmet visor effect from the HUD.");
             }
 
             logger = BepInEx.Logging.Logger.CreateLogSource(GUID);
