@@ -1,8 +1,8 @@
 {
     "name": "RemoveMotionSway",
-    "version_number": "1.2.3",
+    "version_number": "1.3.0",
     "website_url": "https://github.com/j-red/LethalCompany-RemoveMotionSway",
-    "description": "Removes head bob animation, FOV change, and helmet visor HUD overlay while walking and sprinting. Provides config settings for motion intensity and FOV.",
+    "description": "Removes head bob animation, FOV change, and helmet visor HUD overlay while walking and sprinting. Provides config settings for motion intensity, visor, and FOV.",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100"
     ]

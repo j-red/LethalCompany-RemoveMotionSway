@@ -1,3 +1,9 @@
+### v1.3.0
+
+Added config option to re-enable the visor and tweaked logic to only lock camera rotation if motion sway was also disabled. Other improvements include fixing an issue with the fog rendering due to how the visor was being handled and better handling for the camera during special animation states. 
+
+Thanks to [lukeprime](https://github.com/lukeprime) on GitHub for their contributions in this update!
+
 ### v1.2.3
 
 Fixed issue with config FOV options being applied incorrectly and console log spam error when in the terminal menu.
